@@ -1,3 +1,4 @@
+"use client";
 import styles from "./FightersList.module.css";
 
 type Fighter = {
@@ -33,6 +34,14 @@ const fighters: Fighter[] = [
 ];
 
 export default function FighterList() {
+  const handleSelect = (fighter: Fighter) => {
+    localStorage.setItem("selectedFighter", JSON.stringify(fighter)); //Je stocke le fighter sélectionné dans le localStorage.
+    // La méthode setItem() de l'interface Storage, lorsque lui sont passées le duo clé-valeur, les ajoute à l'emplacement de stockage.
+    // Je peux ensuite récupérer ce fighter dans un autre composant.
+    //La méthode JSON.stringify() convertit une valeur JavaScript en chaîne JSON.
+    alert(`${fighter.name} a été sélectionné!`);
+  };
+
   return (
     <ul className={styles.containerCard}>
       {fighters.map((fighter) => (
@@ -45,6 +54,12 @@ export default function FighterList() {
           />
           <p>Style : {fighter.style}</p>
           <p>Health : {fighter.health}</p>
+          <button
+            className={styles.fighterButton}
+            onClick={() => handleSelect(fighter)}
+          >
+            Choisir ce fighter
+          </button>
         </li>
       ))}
     </ul>
