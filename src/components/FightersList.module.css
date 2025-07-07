@@ -1,0 +1,35 @@
+.containerCard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.fighterCard {
+  border: 3px solid #110e9a;
+  border-radius: 20px;
+  width: 300px;
+  padding: 16px;
+  background: radial-gradient(circle at center, #ffffff, #1607e3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.fighterName {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.fighterImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
