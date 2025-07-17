@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { fighters } from "@/data/fighters";
 import { Fighter } from "@/model/Fighter";
 import FighterCard from "@/components/FighterCard";
@@ -15,24 +15,9 @@ export default function ArenaPage() {
   const [opponentSpecialUsed, setOpponentSpecialUsed] =
     useState<boolean>(false);
 
-  const generateRandomOpponent = useCallback((playerFighter: Fighter) => {
-    const possibleOpponents = fighters.filter(
-      (opp) => opp.id !== playerFighter.id
-    );
-
-    const randomOpponentData =
-      possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
-
-    const newOpponent: Fighter = {
-      ...randomOpponentData,
-      currentHealth: randomOpponentData.maxHealth,
-    };
-    setOpponent(newOpponent);
-    localStorage.setItem("opponentName", newOpponent.name);
-    setOpponentSpecialUsed(false);
-  }, []);
-
-  const handleOpponentAttack = useCallback(() => {
+  // handleOpponentAttack reste ici, car il est appelé par setTimeout,
+  // et non directement comme dépendance de l'useEffect principal.
+  const handleOpponentAttack = () => {
     if (
       !selectedFighter ||
       !opponent ||
@@ -75,9 +60,36 @@ export default function ArenaPage() {
     if (newPlayerHealth === 0) {
       alert(`${selectedFighter.name} est vaincu !`);
     }
-  }, [selectedFighter, opponent, opponentSpecialUsed]);
+  };
 
   useEffect(() => {
+    // Déplacez la définition de generateRandomOpponent à l'intérieur de useEffect
+    // pour qu'elle ne soit pas recréée à chaque rendu du composant et ne cause pas de boucle infinie.
+    const generateRandomOpponent = (playerFighter: Fighter) => {
+      const possibleOpponents = fighters.filter(
+        (opp) => opp.id !== playerFighter.id
+      );
+
+      if (possibleOpponents.length === 0) {
+        console.warn(
+          "Aucun autre combattant disponible pour être un adversaire."
+        );
+        setOpponent(null);
+        return;
+      }
+      const randomOpponentData =
+        possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
+
+      const newOpponent: Fighter = {
+        ...randomOpponentData,
+        currentHealth: randomOpponentData.maxHealth,
+      };
+      setOpponent(newOpponent);
+      localStorage.setItem("opponentName", newOpponent.name);
+      setOpponentSpecialUsed(false);
+    };
+    // Fin de la définition de generateRandomOpponent
+
     const storedFighterName = localStorage.getItem("selectedFighterName");
 
     const foundFighterData = storedFighterName
@@ -114,7 +126,7 @@ export default function ArenaPage() {
     } else {
       router.push("/fighters");
     }
-  }, [router, generateRandomOpponent]);
+  }, [router]); // generateRandomOpponent n'est plus une dépendance car elle est définie à l'intérieur.
 
   useEffect(() => {
     if (selectedFighter) {
@@ -126,13 +138,49 @@ export default function ArenaPage() {
   }, [selectedFighter, opponent]);
 
   const handleReplay = () => {
+    // Note: generateRandomOpponent n'est plus accessible directement ici
+    // car elle est définie dans useEffect. Vous devrez la rendre globale (avec useCallback)
+    // ou la redéfinir ici, ou passer setSelectedFighter/setOpponent comme dépendances.
+    // Pour l'instant, je vais la redéfinir localement ici pour que ça fonctionne.
+    // OU, mieux, la rendre disponible via un autre moyen (par ex, la retourner depuis l'effet si nécessaire).
+
+    // Pour l'instant, je vais copier la logique ici pour résoudre l'erreur immédiate.
+    // Une meilleure structure serait de la sortir de useEffect avec useCallback,
+    // mais si c'est interdit, on doit la dupliquer ou trouver une autre approche.
+    // Considérant la contrainte, la dupliquer pour 'handleReplay' est la seule option simple.
+
+    // Redéfinition locale ou logique directe pour handleReplay
+    const generateRandomOpponentForReplay = (playerFighter: Fighter) => {
+      const possibleOpponents = fighters.filter(
+        (opp) => opp.id !== playerFighter.id
+      );
+
+      if (possibleOpponents.length === 0) {
+        console.warn(
+          "Aucun autre combattant disponible pour être un adversaire."
+        );
+        setOpponent(null);
+        return;
+      }
+      const randomOpponentData =
+        possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
+
+      const newOpponent: Fighter = {
+        ...randomOpponentData,
+        currentHealth: randomOpponentData.maxHealth,
+      };
+      setOpponent(newOpponent);
+      localStorage.setItem("opponentName", newOpponent.name);
+      setOpponentSpecialUsed(false);
+    };
+
     if (selectedFighter) {
       setSelectedFighter({
         ...selectedFighter,
         currentHealth: selectedFighter.maxHealth,
       });
       setPlayerSpecialUsed(false);
-      generateRandomOpponent(selectedFighter);
+      generateRandomOpponentForReplay(selectedFighter); // Appelle la version locale
     }
   };
 
@@ -196,7 +244,14 @@ export default function ArenaPage() {
   return (
     <div>
       <h1>Arène de combats</h1>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         {selectedFighter && (
           <FighterCard
             fighter={selectedFighter}
