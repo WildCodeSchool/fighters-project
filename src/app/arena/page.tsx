@@ -15,8 +15,6 @@ export default function ArenaPage() {
   const [opponentSpecialUsed, setOpponentSpecialUsed] =
     useState<boolean>(false);
 
-  // handleOpponentAttack reste ici, car il est appelé par setTimeout,
-  // et non directement comme dépendance de l'useEffect principal.
   const handleOpponentAttack = () => {
     if (
       !selectedFighter ||
@@ -63,8 +61,6 @@ export default function ArenaPage() {
   };
 
   useEffect(() => {
-    // Déplacez la définition de generateRandomOpponent à l'intérieur de useEffect
-    // pour qu'elle ne soit pas recréée à chaque rendu du composant et ne cause pas de boucle infinie.
     const generateRandomOpponent = (playerFighter: Fighter) => {
       const possibleOpponents = fighters.filter(
         (opp) => opp.id !== playerFighter.id
@@ -88,7 +84,6 @@ export default function ArenaPage() {
       localStorage.setItem("opponentName", newOpponent.name);
       setOpponentSpecialUsed(false);
     };
-    // Fin de la définition de generateRandomOpponent
 
     const storedFighterName = localStorage.getItem("selectedFighterName");
 
@@ -126,7 +121,7 @@ export default function ArenaPage() {
     } else {
       router.push("/fighters");
     }
-  }, [router]); // generateRandomOpponent n'est plus une dépendance car elle est définie à l'intérieur.
+  }, [router]);
 
   useEffect(() => {
     if (selectedFighter) {
@@ -138,18 +133,6 @@ export default function ArenaPage() {
   }, [selectedFighter, opponent]);
 
   const handleReplay = () => {
-    // Note: generateRandomOpponent n'est plus accessible directement ici
-    // car elle est définie dans useEffect. Vous devrez la rendre globale (avec useCallback)
-    // ou la redéfinir ici, ou passer setSelectedFighter/setOpponent comme dépendances.
-    // Pour l'instant, je vais la redéfinir localement ici pour que ça fonctionne.
-    // OU, mieux, la rendre disponible via un autre moyen (par ex, la retourner depuis l'effet si nécessaire).
-
-    // Pour l'instant, je vais copier la logique ici pour résoudre l'erreur immédiate.
-    // Une meilleure structure serait de la sortir de useEffect avec useCallback,
-    // mais si c'est interdit, on doit la dupliquer ou trouver une autre approche.
-    // Considérant la contrainte, la dupliquer pour 'handleReplay' est la seule option simple.
-
-    // Redéfinition locale ou logique directe pour handleReplay
     const generateRandomOpponentForReplay = (playerFighter: Fighter) => {
       const possibleOpponents = fighters.filter(
         (opp) => opp.id !== playerFighter.id
@@ -180,7 +163,7 @@ export default function ArenaPage() {
         currentHealth: selectedFighter.maxHealth,
       });
       setPlayerSpecialUsed(false);
-      generateRandomOpponentForReplay(selectedFighter); // Appelle la version locale
+      generateRandomOpponentForReplay(selectedFighter);
     }
   };
 
@@ -244,14 +227,7 @@ export default function ArenaPage() {
   return (
     <div>
       <h1>Arène de combats</h1>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div>
         {selectedFighter && (
           <FighterCard
             fighter={selectedFighter}
