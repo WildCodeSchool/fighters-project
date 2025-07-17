@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { fighters } from "@/data/fighters";
 import { Fighter } from "@/model/Fighter";
 import FighterCard from "@/components/FighterCard";
@@ -15,24 +15,7 @@ export default function ArenaPage() {
   const [opponentSpecialUsed, setOpponentSpecialUsed] =
     useState<boolean>(false);
 
-  const generateRandomOpponent = useCallback((playerFighter: Fighter) => {
-    const possibleOpponents = fighters.filter(
-      (opp) => opp.id !== playerFighter.id
-    );
-
-    const randomOpponentData =
-      possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
-
-    const newOpponent: Fighter = {
-      ...randomOpponentData,
-      currentHealth: randomOpponentData.maxHealth,
-    };
-    setOpponent(newOpponent);
-    localStorage.setItem("opponentName", newOpponent.name);
-    setOpponentSpecialUsed(false);
-  }, []);
-
-  const handleOpponentAttack = useCallback(() => {
+  const handleOpponentAttack = () => {
     if (
       !selectedFighter ||
       !opponent ||
@@ -75,9 +58,33 @@ export default function ArenaPage() {
     if (newPlayerHealth === 0) {
       alert(`${selectedFighter.name} est vaincu !`);
     }
-  }, [selectedFighter, opponent, opponentSpecialUsed]);
+  };
 
   useEffect(() => {
+    const generateRandomOpponent = (playerFighter: Fighter) => {
+      const possibleOpponents = fighters.filter(
+        (opp) => opp.id !== playerFighter.id
+      );
+
+      if (possibleOpponents.length === 0) {
+        console.warn(
+          "Aucun autre combattant disponible pour être un adversaire."
+        );
+        setOpponent(null);
+        return;
+      }
+      const randomOpponentData =
+        possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
+
+      const newOpponent: Fighter = {
+        ...randomOpponentData,
+        currentHealth: randomOpponentData.maxHealth,
+      };
+      setOpponent(newOpponent);
+      localStorage.setItem("opponentName", newOpponent.name);
+      setOpponentSpecialUsed(false);
+    };
+
     const storedFighterName = localStorage.getItem("selectedFighterName");
 
     const foundFighterData = storedFighterName
@@ -114,7 +121,7 @@ export default function ArenaPage() {
     } else {
       router.push("/fighters");
     }
-  }, [router, generateRandomOpponent]);
+  }, [router]);
 
   useEffect(() => {
     if (selectedFighter) {
@@ -126,13 +133,37 @@ export default function ArenaPage() {
   }, [selectedFighter, opponent]);
 
   const handleReplay = () => {
+    const generateRandomOpponentForReplay = (playerFighter: Fighter) => {
+      const possibleOpponents = fighters.filter(
+        (opp) => opp.id !== playerFighter.id
+      );
+
+      if (possibleOpponents.length === 0) {
+        console.warn(
+          "Aucun autre combattant disponible pour être un adversaire."
+        );
+        setOpponent(null);
+        return;
+      }
+      const randomOpponentData =
+        possibleOpponents[Math.floor(Math.random() * possibleOpponents.length)];
+
+      const newOpponent: Fighter = {
+        ...randomOpponentData,
+        currentHealth: randomOpponentData.maxHealth,
+      };
+      setOpponent(newOpponent);
+      localStorage.setItem("opponentName", newOpponent.name);
+      setOpponentSpecialUsed(false);
+    };
+
     if (selectedFighter) {
       setSelectedFighter({
         ...selectedFighter,
         currentHealth: selectedFighter.maxHealth,
       });
       setPlayerSpecialUsed(false);
-      generateRandomOpponent(selectedFighter);
+      generateRandomOpponentForReplay(selectedFighter);
     }
   };
 
