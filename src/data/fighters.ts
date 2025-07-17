@@ -1,26 +1,10 @@
-export type Fighter = {
-  id: number;
-  name: string;
-  health: number;
-  style: string;
-  image: string;
-  attack: {
-    normal: {
-      damage: number;
-      name: string;
-    };
-    special: {
-      damage: number;
-      name: string;
-    };
-  };
-};
-
+import { Fighter } from "@/model/Fighter";
 export const fighters: Fighter[] = [
   {
     id: 1,
     name: "Ken",
-    health: 100,
+    maxHealth: 100,
+    currentHealth: 100,
     style: "Karate",
     image: "/fighters/Ken_Masters_(SF3_-_Third_Strike).png",
     attack: {
@@ -37,7 +21,8 @@ export const fighters: Fighter[] = [
   {
     id: 2,
     name: "Chun-Li",
-    health: 90,
+    maxHealth: 90,
+    currentHealth: 90,
     style: "Taekwondo",
     image: "/fighters/Chun-Li.png",
     attack: {
@@ -54,7 +39,8 @@ export const fighters: Fighter[] = [
   {
     id: 3,
     name: "Ryu",
-    health: 100,
+    maxHealth: 100,
+    currentHealth: 100,
     style: "Judo",
     image: "/fighters/RyuStreetFighterTwoHadoken.png",
     attack: {

@@ -1,4 +1,4 @@
-import { Fighter } from "@/data/fighters";
+import { Fighter } from "@/model/Fighter";
 
 type FighterCardProps = {
   fighter: Fighter;
