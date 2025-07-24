@@ -11,7 +11,7 @@ export default function AcceuilPage() {
       />
       <ul>
         <li className={styles.buttonFighters}>
-          <Link href="/fighters">Fighters</Link>
+          <Link href="/fighters">Start</Link>
         </li>
       </ul>
     </div>
