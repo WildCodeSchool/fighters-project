@@ -19,7 +19,7 @@ export default function CombatButtons({
   playerSpecialUsed,
   initialPlayerHealth,
 }: CombatButtonsProps) {
-  // les props permettent de passer des données au composant CombatButtons et les : CombatButtonsProps définissent le type de ces props
+  // "Rappel"! les props permettent de passer des données au composant CombatButtons et les : CombatButtonsProps définissent le type de ces props
   const canUseSpecial =
     !playerSpecialUsed && playerHealth <= initialPlayerHealth * 0.5;
 
