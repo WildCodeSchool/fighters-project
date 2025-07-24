@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Nerko_One } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +11,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+const nerkoOne = Nerko_One({
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-nerko-one",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${nerkoOne.variable}`}
+      >
         {children}
       </body>
     </html>
