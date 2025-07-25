@@ -1,0 +1,122 @@
+.fighterCard {
+  border: 1px solid #1100ff;
+  border-radius: 15px;
+  width: 270px;
+  padding: 20px;
+  background-color: rgba(10, 10, 10, 0.6);
+  box-shadow: 0 0 20px rgba(4, 0, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  min-height: auto;
+}
+
+.fighterImage {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.flippedImage {
+  transform: scaleX(-1);
+}
+
+.fighterCard p {
+  margin-bottom: 15px;
+  color: #e0e0e0;
+}
+
+.fighterCard .name {
+  font-family: var(--font-nerko-one), cursive, sans-serif;
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #dc3545, #007bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-text-stroke: 1px #000000;
+  text-shadow: 0 0 8px rgba(4, 0, 255, 0.9);
+}
+
+.healthBarContainer {
+  width: 80%;
+  background-color: #b7b7b7;
+  border-radius: 10px;
+  height: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border: 1px solid #777;
+}
+
+.healthBar {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.5s ease-out;
+  background-color: #28a745;
+}
+
+@media (max-width: 1024px) {
+  .fighterCard {
+    width: 220px;
+    padding: 15px;
+  }
+  .fighterCard .name {
+    font-size: 2.2em;
+  }
+  .fighterImage {
+    max-height: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fighterCard {
+    width: 180px;
+    padding: 12px;
+  }
+  .fighterCard .name {
+    font-size: 1.8em;
+  }
+  .fighterImage {
+    max-height: 140px;
+  }
+  .fighterCard p {
+    font-size: 0.9rem;
+  }
+  .healthBarContainer {
+    height: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fighterCard {
+    width: 100px;
+    padding: 10px;
+  }
+  .fighterCard .name {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  .fighterImage {
+    max-height: 60px;
+    margin-bottom: 10px;
+  }
+  .fighterCard p {
+    font-size: 0.6rem;
+    margin-bottom: 10px;
+  }
+  .healthBarContainer {
+    width: 80%;
+    height: 7px;
+  }
+}

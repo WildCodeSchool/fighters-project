@@ -1,7 +1,63 @@
+.fightersPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+
+  background-image: url("/Logo/depositphotos_465165908-stock-photo-fighting-cage-interior-view-sport.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .listTitle {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #110e9a;
+  font-family: var(--font-nerko-one), cursive, sans-serif;
+  font-size: 4rem;
+  font-weight: 100;
+  color: #ffffff;
   text-align: center;
-  margin: 20px 0;
+  margin: 50px 0 50px 0;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  line-height: 1.1;
+  transform: skewX(-8deg);
+  white-space: nowrap;
+
+  -webkit-text-stroke: 1px #000000;
+
+  text-shadow: 0 0 15px rgba(4, 0, 255, 0.9);
+}
+
+@media (max-width: 1024px) {
+  .listTitle {
+    font-size: 3rem;
+    letter-spacing: 4px;
+    -webkit-text-stroke: 1px #000000;
+    text-shadow: 0 0 15px rgba(4, 0, 255, 0.9);
+  }
+}
+
+@media (max-width: 768px) {
+  .listTitle {
+    font-size: 2rem;
+    letter-spacing: 3px;
+    -webkit-text-stroke: 1px #000000;
+    text-shadow: 0 0 15px rgba(4, 0, 255, 0.9);
+    margin: 30px 0 50px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .listTitle {
+    font-size: 1rem;
+    letter-spacing: 2px;
+    -webkit-text-stroke: 1px #000000;
+    margin: 20px 0 40px 0;
+    transform: skewX(0deg);
+  }
 }
