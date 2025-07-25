@@ -1,4 +1,5 @@
 "use client";
+import styles from "./CombatButtons.module.css";
 
 type CombatButtonsProps = {
   onAttack: (type: "normal" | "special") => void;
@@ -19,27 +20,38 @@ export default function CombatButtons({
   playerSpecialUsed,
   initialPlayerHealth,
 }: CombatButtonsProps) {
-  // "Rappel"! les props permettent de passer des données au composant CombatButtons et les : CombatButtonsProps définissent le type de ces props
   const canUseSpecial =
     !playerSpecialUsed && playerHealth <= initialPlayerHealth * 0.5;
 
   const isDisabled = playerHealth <= 0 || opponentHealth <= 0;
 
   return (
-    <div>
+    <div className={styles.controls}>
+      {" "}
       {isDisabled ? (
         <>
-          <button onClick={onReplay}>Rejouer</button>
-          <button onClick={onBack}>Retour à la sélection</button>
+          <button onClick={onReplay} className={styles.replayButton}>
+            {" "}
+            Rejouer
+          </button>
+          <button onClick={onBack} className={styles.backButton}>
+            {" "}
+            Retour à la sélection
+          </button>
         </>
       ) : (
         <>
-          <button onClick={() => onAttack("normal")} disabled={isDisabled}>
+          <button
+            onClick={() => onAttack("normal")}
+            disabled={isDisabled}
+            className={`${styles.button} ${styles.normalAttackButton}`}
+          >
             Attaque normale
           </button>
           <button
             onClick={() => onAttack("special")}
             disabled={!canUseSpecial || isDisabled}
+            className={`${styles.button} ${styles.specialAttackButton}`}
           >
             Attaque spéciale
           </button>

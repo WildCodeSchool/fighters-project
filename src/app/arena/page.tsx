@@ -12,6 +12,8 @@ import { handlePlayerAttack } from "@/lib/combat/handlePlayerAttack";
 import { executeOpponentAttack } from "@/lib/combat/executeOpponentAttack";
 import { resetFight } from "@/lib/combat/resetFight";
 
+import styles from "./page.module.css";
+
 export default function ArenaPage() {
   const router = useRouter();
   const [selectedFighter, setSelectedFighter] = useState<Fighter | null>(null);
@@ -96,24 +98,25 @@ export default function ArenaPage() {
   };
 
   return (
-    <div>
-      <h1>Arène de combats</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Arène de combats</h1>
 
-      <div>
+      <div className={styles.fightersDisplay}>
         {selectedFighter && (
           <FighterCard
             fighter={selectedFighter}
             currentHealth={selectedFighter.currentHealth}
+            isPlayer={true}
           />
         )}
         {opponent && (
           <FighterCard
             fighter={opponent}
             currentHealth={opponent.currentHealth}
+            isPlayer={false}
           />
         )}
       </div>
-
       {selectedFighter && opponent && (
         <CombatButtons
           onAttack={handleAttack}

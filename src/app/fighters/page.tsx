@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 export default function FightersPage() {
   return (
-    <div>
+    <div className={styles.fightersPageContainer}>
       <h1 className={styles.listTitle}>Liste des Fighters</h1>
       <FighterList />
     </div>

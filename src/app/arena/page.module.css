@@ -3,17 +3,36 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  font-family: "Arial", sans-serif;
-  background-color: #1a1a2e;
+  background-image: url("/Logo/Gemini_Generated_Image_j55fcvj55fcvj55f.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #e0e0e0;
   min-height: 100vh;
 }
 
 .title {
-  color: #e94560;
-  margin-bottom: 30px;
-  font-size: 2.5em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-nerko-one), cursive, sans-serif;
+  font-size: 4rem;
+  font-weight: 100;
+  text-align: center;
+  margin: 50px 0 50px 0;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  line-height: 1.1;
+  transform: skewX(-8deg);
+  white-space: nowrap;
+  background: linear-gradient(to left, #dc3545, #007bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  letter-spacing: 2px;
+  transition: background-color 0.3s ease, color 0.9s ease;
+  transform: skewX(-15deg);
+  -webkit-text-stroke: 1px #000000;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
 }
 
 .fightersDisplay {
@@ -22,126 +41,7 @@
   width: 100%;
   max-width: 1200px;
   margin-bottom: 40px;
-  gap: 30px;
-}
-
-.fighterCard {
-  background-color: #2a2a4a;
-  border: 2px solid #533483;
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-  flex: 1;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.fighterCard img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #e94560;
-  margin-bottom: 15px;
-}
-
-.fighterCard p {
-  margin: 5px 0;
-  font-size: 1.1em;
-}
-
-.fighterCard .name {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #fcbf49;
-  margin-bottom: 10px;
-}
-
-.healthBarContainer {
-  width: 80%;
-  background-color: #555;
-  border-radius: 5px;
-  height: 20px;
-  margin-top: 10px;
-  overflow: hidden;
-  border: 1px solid #777;
-}
-
-.healthBar {
-  height: 100%;
-  background-color: #28a745;
-  width: 100%;
-  border-radius: 5px;
-  transition: width 0.5s ease-out;
-}
-
-.playerHealthBar {
-  background-color: #28a745;
-}
-
-.opponentHealthBar {
-  background-color: #dc3545;
-}
-
-.controls {
-  margin-top: 30px;
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.button {
-  padding: 12px 25px;
-  font-size: 1.1em;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.button:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.normalAttackButton {
-  background-color: #007bff;
-}
-
-.normalAttackButton:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.specialAttackButton {
-  background-color: #ffc107;
-  color: #333;
-}
-
-.specialAttackButton:hover:not(:disabled) {
-  background-color: #e0a800;
-}
-
-.replayButton,
-.backButton {
-  background-color: #6c757d;
-  color: white;
-  margin-top: 20px;
-}
-
-.replayButton:hover:not(:disabled),
-.backButton:hover:not(:disabled) {
-  background-color: #5a6268;
+  gap: 80px;
 }
 
 .resultMessage {
@@ -152,14 +52,38 @@
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .fightersDisplay {
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-around;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5em;
+    margin: 30px 0;
+    letter-spacing: 3px;
+    transform: skewX(-10deg);
   }
 
-  .fighterCard {
-    width: 90%;
-    margin-bottom: 20px;
+  .fightersDisplay {
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .fightersDisplay {
+    justify-content: space-around;
+    gap: 10px;
   }
 }

@@ -1,0 +1,96 @@
+:root {
+  --font-nerko-one: var(--font-nerko-one);
+}
+.containerPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: radial-gradient(#ffffff 0%, transparent 5%, #000000 30%);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.logo {
+  max-width: 600px;
+  height: auto;
+}
+
+.buttonFighters {
+  list-style: none;
+  margin: -30px;
+  padding: 0;
+}
+
+.buttonFighters a {
+  display: inline-block;
+  background-color: transparent;
+  color: #ffffff;
+  font-family: var(--font-nerko-one), monospace;
+  text-transform: uppercase;
+  padding: 5px 20px;
+  border: 2px solid #1100ff;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: background-color 0.3s ease, color 0.9s ease;
+  box-shadow: 0 0 15px rgba(4, 0, 255, 0.9);
+  transform: skewX(-15deg);
+}
+
+.buttonFighters a:hover {
+  color: #ffffff;
+  border: 2px solid #ff0000;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
+  transform: skewX(-12deg);
+}
+
+@media (max-width: 1024px) {
+  .logo {
+    max-width: 400px;
+    margin-bottom: 10px;
+  }
+  .buttonFighters a {
+    letter-spacing: 1.5px;
+    transform: skewX(-13deg);
+  }
+}
+
+@media (max-width: 750px) and (orientation: landscape) {
+  .logo {
+    max-width: 300px;
+    margin-bottom: 0;
+  }
+  .buttonFighters a {
+    font-size: 1em;
+    padding: 4px 15px;
+    letter-spacing: 0.5px;
+    transform: skewX(-10deg);
+  }
+  .containerPage {
+    padding: 10px;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo {
+    max-width: 200px;
+    margin: 0;
+  }
+  .buttonFighters a {
+    font-size: 0.5em;
+    padding: 3px 10px;
+    letter-spacing: 0;
+    border: 1px solid #1100ff;
+    transform: skewX(-13deg);
+  }
+  .buttonFighters a:hover {
+    color: #ffffff;
+    border: 1px solid #ff0000;
+    transform: skewX(-10deg);
+  }
+}
