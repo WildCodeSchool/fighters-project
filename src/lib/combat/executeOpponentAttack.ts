@@ -1,5 +1,4 @@
 import { Fighter } from "@/model/Fighter";
-import { fighters } from "@/data/fighters";
 
 type AttackType = "normal" | "special";
 

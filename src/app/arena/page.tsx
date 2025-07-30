@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Fighter } from "@/model/Fighter";
@@ -11,6 +11,7 @@ import { generateRandomOpponent } from "@/lib/combat/generateRandomOpponent";
 import { handlePlayerAttack } from "@/lib/combat/handlePlayerAttack";
 import { executeOpponentAttack } from "@/lib/combat/executeOpponentAttack";
 import { resetFight } from "@/lib/combat/resetFight";
+import { saveCombat } from "@/lib/combat/saveCombat";
 
 import styles from "./page.module.css";
 
@@ -21,41 +22,6 @@ export default function ArenaPage() {
   const [playerSpecialUsed, setPlayerSpecialUsed] = useState(false);
   const [opponentSpecialUsed, setOpponentSpecialUsed] = useState(false);
   const [combatFinished, setCombatFinished] = useState(false);
-
-  const recordCombatResult = useCallback(
-    async (fighter1Id: number, fighter2Id: number, winnerId: number | null) => {
-      try {
-        const res = await fetch("/api/infos/combats", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fighter1_id: fighter1Id,
-            fighter2_id: fighter2Id,
-            winner_id: winnerId,
-          }),
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          console.error(
-            "Erreur détaillée lors de l'enregistrement du combat:",
-            errorData
-          );
-          throw new Error(
-            `Erreur lors de l'enregistrement du combat: ${res.status} - ${
-              errorData.error || res.statusText
-            }`
-          );
-        }
-        console.log("Combat enregistré avec succès !");
-      } catch (error) {
-        console.error("Erreur lors de l'enregistrement du combat :", error);
-      }
-    },
-    []
-  );
 
   useEffect(() => {
     const storedFighterName = localStorage.getItem("selectedFighterName");
@@ -99,67 +65,63 @@ export default function ArenaPage() {
     setCombatFinished(false);
   }, [router]);
 
-  const onPlayerVictory = useCallback(() => {
-    if (selectedFighter && opponent) {
+  useEffect(() => {
+    if (opponent && opponent.currentHealth === 0 && selectedFighter) {
       alert(`${selectedFighter.name} a vaincu ${opponent.name} !`);
       setCombatFinished(true);
-      recordCombatResult(selectedFighter.id, opponent.id, selectedFighter.id);
+      saveCombat(selectedFighter, opponent, selectedFighter.id);
     }
-  }, [selectedFighter, opponent, recordCombatResult]);
+  }, [opponent, selectedFighter]);
 
-  const onOpponentVictory = useCallback(() => {
-    if (selectedFighter && opponent) {
+  useEffect(() => {
+    if (selectedFighter && selectedFighter.currentHealth === 0 && opponent) {
       alert(`${opponent.name} a vaincu ${selectedFighter.name} !`);
       setCombatFinished(true);
-      recordCombatResult(selectedFighter.id, opponent.id, opponent.id);
+      saveCombat(selectedFighter, opponent, opponent.id);
     }
-  }, [selectedFighter, opponent, recordCombatResult]);
+  }, [selectedFighter, opponent]);
 
-  const handleAttack = useCallback(
-    (attackType: "normal" | "special") => {
-      if (!selectedFighter || !opponent || combatFinished) return;
+  const handleAttack = (attackType: "normal" | "special") => {
+    if (!selectedFighter || !opponent || combatFinished) return;
 
-      handlePlayerAttack({
-        selectedFighter,
-        opponent,
-        attackType,
-        playerSpecialUsed,
-        setOpponent,
-        setPlayerSpecialUsed,
-        setSelectedFighter,
-        onVictory: onPlayerVictory,
-        onOpponentTurn: () => {
-          setTimeout(() => {
-            if (
-              opponent.currentHealth > 0 &&
-              selectedFighter.currentHealth > 0
-            ) {
-              executeOpponentAttack({
-                attacker: opponent,
-                defender: selectedFighter,
-                specialUsed: opponentSpecialUsed,
-                setDefender: setSelectedFighter,
-                setSpecialUsed: setOpponentSpecialUsed,
-                onDefeat: onOpponentVictory,
-              });
-            }
-          }, 800);
-        },
-      });
-    },
-    [
+    handlePlayerAttack({
       selectedFighter,
       opponent,
+      attackType,
       playerSpecialUsed,
-      opponentSpecialUsed,
-      combatFinished,
-      onPlayerVictory,
-      onOpponentVictory,
+      setOpponent,
+      setPlayerSpecialUsed,
       setSelectedFighter,
-    ]
-  );
+      onVictory: () => {},
+      onOpponentTurn: () => {
+        setTimeout(() => {
+          setOpponent((prevOpponent) => {
+            setSelectedFighter((prevSelectedFighter) => {
+              if (
+                prevOpponent &&
+                prevOpponent.currentHealth > 0 &&
+                prevSelectedFighter &&
+                prevSelectedFighter.currentHealth > 0
+              ) {
+                executeOpponentAttack({
+                  attacker: prevOpponent,
+                  defender: prevSelectedFighter,
+                  specialUsed: opponentSpecialUsed,
+                  setDefender: setSelectedFighter,
+                  setSpecialUsed: setOpponentSpecialUsed,
+                  onDefeat: () => {},
+                });
+              }
+              return prevSelectedFighter;
+            });
+            return prevOpponent;
+          });
+        }, 800);
+      },
+    });
+  };
 
-  const handleReplay = useCallback(() => {
+  const handleReplay = () => {
     if (!selectedFighter) return;
     setCombatFinished(false);
     resetFight({
@@ -169,21 +131,13 @@ export default function ArenaPage() {
       setPlayerSpecialUsed,
       setOpponentSpecialUsed,
     });
-    const newOpponent = generateRandomOpponent(selectedFighter);
-    if (newOpponent) {
-      setOpponent({ ...newOpponent, currentHealth: newOpponent.maxHealth });
-      localStorage.setItem("opponentName", newOpponent.name);
-    } else {
-      console.warn("Impossible de générer un nouvel adversaire.");
-      router.push("/fighters");
-    }
-  }, [selectedFighter, router]);
+  };
 
-  const handleBackToSelection = useCallback(() => {
+  const handleBackToSelection = () => {
     localStorage.removeItem("selectedFighterName");
     localStorage.removeItem("opponentName");
     router.push("/fighters");
-  }, [router]);
+  };
 
   return (
     <div className={styles.container}>

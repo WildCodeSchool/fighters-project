@@ -1,3 +1,4 @@
+// app/combats/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -14,6 +15,13 @@ type Fight = {
 export default function CombatsPage() {
   const [combats, setCombats] = useState<Fight[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.body.classList.add("hide-global-scores-link");
+    return () => {
+      document.body.classList.remove("hide-global-scores-link");
+    };
+  }, []);
 
   useEffect(() => {
     fetch("/api/infos/combats")
@@ -40,7 +48,7 @@ export default function CombatsPage() {
   return (
     <div className={styles.combatPageContainer}>
       {" "}
-      <h1 className={styles.pageTitle}>Liste des combats</h1>
+      <h1 className={styles.pageTitle}>Historique des combats</h1>
       <div className={styles.backButtonContainer}>
         {" "}
         <Link href="/fighters" className={styles.backButton}>
@@ -76,7 +84,8 @@ export default function CombatsPage() {
                 )}
               </p>
               <p className={styles.combatDate}>
-                <strong>Date :</strong> {new Date(fight.date).toLocaleString()}
+                <strong>Date :</strong>{" "}
+                {new Date(fight.date).toLocaleDateString()}
               </p>
             </li>
           ))}
