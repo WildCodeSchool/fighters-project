@@ -11,6 +11,7 @@ import { generateRandomOpponent } from "@/lib/combat/generateRandomOpponent";
 import { handlePlayerAttack } from "@/lib/combat/handlePlayerAttack";
 import { executeOpponentAttack } from "@/lib/combat/executeOpponentAttack";
 import { resetFight } from "@/lib/combat/resetFight";
+import { saveCombat } from "@/lib/combat/saveCombat";
 
 import styles from "./page.module.css";
 
@@ -20,10 +21,10 @@ export default function ArenaPage() {
   const [opponent, setOpponent] = useState<Fighter | null>(null);
   const [playerSpecialUsed, setPlayerSpecialUsed] = useState(false);
   const [opponentSpecialUsed, setOpponentSpecialUsed] = useState(false);
+  const [combatFinished, setCombatFinished] = useState(false);
 
   useEffect(() => {
     const storedFighterName = localStorage.getItem("selectedFighterName");
-
     const foundFighter = fighters.find((f) => f.name === storedFighterName);
 
     if (!foundFighter) {
@@ -38,50 +39,91 @@ export default function ArenaPage() {
     setSelectedFighter(newSelectedFighter);
 
     const storedOpponentName = localStorage.getItem("opponentName");
-    const foundOpponent = fighters.find((f) => f.name === storedOpponentName);
-
-    if (foundOpponent && foundOpponent.id !== newSelectedFighter.id) {
-      setOpponent({ ...foundOpponent, currentHealth: foundOpponent.maxHealth });
-    } else {
-      const newOpponent = generateRandomOpponent(newSelectedFighter);
-      if (newOpponent) {
-        setOpponent(newOpponent);
-        localStorage.setItem("opponentName", newOpponent.name);
+    let initialOpponent: Fighter | null = null;
+    if (storedOpponentName) {
+      initialOpponent =
+        fighters.find(
+          (f) => f.name === storedOpponentName && f.id !== newSelectedFighter.id
+        ) || null;
+    }
+    if (!initialOpponent) {
+      initialOpponent = generateRandomOpponent(newSelectedFighter);
+      if (initialOpponent) {
+        localStorage.setItem("opponentName", initialOpponent.name);
       }
     }
 
-    setPlayerSpecialUsed(false);
-    setOpponentSpecialUsed(false);
+    if (initialOpponent) {
+      setOpponent({
+        ...initialOpponent,
+        currentHealth: initialOpponent.maxHealth,
+      });
+    } else {
+      console.warn("Impossible de générer un adversaire. Redirection.");
+      router.push("/fighters");
+    }
+    setCombatFinished(false);
   }, [router]);
 
-  const handleAttack = (type: "normal" | "special") => {
-    if (!selectedFighter || !opponent) return;
+  useEffect(() => {
+    if (opponent && opponent.currentHealth === 0 && selectedFighter) {
+      alert(`${selectedFighter.name} a vaincu ${opponent.name} !`);
+      setCombatFinished(true);
+      saveCombat(selectedFighter, opponent, selectedFighter.id);
+    }
+  }, [opponent, selectedFighter]);
+
+  useEffect(() => {
+    if (selectedFighter && selectedFighter.currentHealth === 0 && opponent) {
+      alert(`${opponent.name} a vaincu ${selectedFighter.name} !`);
+      setCombatFinished(true);
+      saveCombat(selectedFighter, opponent, opponent.id);
+    }
+  }, [selectedFighter, opponent]);
+
+  const handleAttack = (attackType: "normal" | "special") => {
+    if (!selectedFighter || !opponent || combatFinished) return;
 
     handlePlayerAttack({
       selectedFighter,
       opponent,
-      attackType: type,
+      attackType,
       playerSpecialUsed,
-      setSelectedFighter,
       setOpponent,
       setPlayerSpecialUsed,
-      onVictory: () => alert("Victoire !"),
+      setSelectedFighter,
+      onVictory: () => {},
       onOpponentTurn: () => {
-        executeOpponentAttack({
-          attacker: opponent,
-          defender: selectedFighter,
-          specialUsed: opponentSpecialUsed,
-          setDefender: setSelectedFighter,
-          setSpecialUsed: setOpponentSpecialUsed,
-          onDefeat: () => alert(`${selectedFighter.name} est vaincu !`),
-        });
+        setTimeout(() => {
+          setOpponent((prevOpponent) => {
+            setSelectedFighter((prevSelectedFighter) => {
+              if (
+                prevOpponent &&
+                prevOpponent.currentHealth > 0 &&
+                prevSelectedFighter &&
+                prevSelectedFighter.currentHealth > 0
+              ) {
+                executeOpponentAttack({
+                  attacker: prevOpponent,
+                  defender: prevSelectedFighter,
+                  specialUsed: opponentSpecialUsed,
+                  setDefender: setSelectedFighter,
+                  setSpecialUsed: setOpponentSpecialUsed,
+                  onDefeat: () => {},
+                });
+              }
+              return prevSelectedFighter;
+            });
+            return prevOpponent;
+          });
+        }, 800);
       },
     });
   };
 
   const handleReplay = () => {
     if (!selectedFighter) return;
-
+    setCombatFinished(false);
     resetFight({
       selectedFighter,
       setSelectedFighter,
@@ -126,6 +168,7 @@ export default function ArenaPage() {
           opponentHealth={opponent.currentHealth}
           playerSpecialUsed={playerSpecialUsed}
           initialPlayerHealth={selectedFighter.maxHealth}
+          disableButtons={combatFinished}
         />
       )}
     </div>

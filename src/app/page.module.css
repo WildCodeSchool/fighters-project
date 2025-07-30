@@ -15,6 +15,7 @@
 .logo {
   max-width: 600px;
   height: auto;
+  margin-top: -100px;
 }
 
 .buttonFighters {
@@ -29,11 +30,11 @@
   color: #ffffff;
   font-family: var(--font-nerko-one), monospace;
   text-transform: uppercase;
-  padding: 5px 20px;
+  padding: 10px 30px;
   border: 2px solid #1100ff;
   border-radius: 25px;
   text-decoration: none;
-  font-size: 1.2em;
+  font-size: 1.5em;
   font-weight: bold;
   letter-spacing: 2px;
   transition: background-color 0.3s ease, color 0.9s ease;
@@ -42,7 +43,6 @@
 }
 
 .buttonFighters a:hover {
-  color: #ffffff;
   border: 2px solid #ff0000;
   box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
   transform: skewX(-12deg);

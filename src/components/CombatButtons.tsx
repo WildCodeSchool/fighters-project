@@ -1,7 +1,8 @@
 "use client";
+import React from "react";
 import styles from "./CombatButtons.module.css";
 
-type CombatButtonsProps = {
+interface CombatButtonsProps {
   onAttack: (type: "normal" | "special") => void;
   onReplay: () => void;
   onBack: () => void;
@@ -9,9 +10,10 @@ type CombatButtonsProps = {
   opponentHealth: number;
   playerSpecialUsed: boolean;
   initialPlayerHealth: number;
-};
+  disableButtons: boolean;
+}
 
-export default function CombatButtons({
+const CombatButtons: React.FC<CombatButtonsProps> = ({
   onAttack,
   onReplay,
   onBack,
@@ -19,44 +21,45 @@ export default function CombatButtons({
   opponentHealth,
   playerSpecialUsed,
   initialPlayerHealth,
-}: CombatButtonsProps) {
-  const canUseSpecial =
-    !playerSpecialUsed && playerHealth <= initialPlayerHealth * 0.5;
-
-  const isDisabled = playerHealth <= 0 || opponentHealth <= 0;
+  disableButtons,
+}) => {
+  const isPlayerLowHealth = playerHealth <= initialPlayerHealth * 0.5;
+  const isCombatOver = playerHealth <= 0 || opponentHealth <= 0;
 
   return (
     <div className={styles.controls}>
       {" "}
-      {isDisabled ? (
-        <>
-          <button onClick={onReplay} className={styles.replayButton}>
-            {" "}
-            Rejouer
-          </button>
-          <button onClick={onBack} className={styles.backButton}>
-            {" "}
-            Retour à la sélection
-          </button>
-        </>
-      ) : (
+      {!isCombatOver && (
         <>
           <button
             onClick={() => onAttack("normal")}
-            disabled={isDisabled}
             className={`${styles.button} ${styles.normalAttackButton}`}
+            disabled={disableButtons}
           >
-            Attaque normale
+            Attaque Normale
           </button>
           <button
             onClick={() => onAttack("special")}
-            disabled={!canUseSpecial || isDisabled}
             className={`${styles.button} ${styles.specialAttackButton}`}
+            disabled={disableButtons || playerSpecialUsed || !isPlayerLowHealth}
           >
-            Attaque spéciale
+            Attaque Spéciale
+            {playerSpecialUsed}
+          </button>
+        </>
+      )}
+      {isCombatOver && (
+        <>
+          <button onClick={onReplay} className={styles.replayButton}>
+            Rejouer
+          </button>
+          <button onClick={onBack} className={styles.backButton}>
+            Retour à la sélection
           </button>
         </>
       )}
     </div>
   );
-}
+};
+
+export default CombatButtons;

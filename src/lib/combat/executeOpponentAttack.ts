@@ -1,5 +1,4 @@
 import { Fighter } from "@/model/Fighter";
-import { fighters } from "@/data/fighters";
 
 type AttackType = "normal" | "special";
 
@@ -102,9 +101,6 @@ export function executeOpponentAttack({
   setDefender({ ...defender, currentHealth: newHealth });
 
   let message = `${attacker.name} utilise ${attack.name} et inflige ${damage} dégâts !`;
-  if (bonus > 0) {
-    message += ` (+${bonus} dégâts bonus)`;
-  }
 
   alert(message);
 

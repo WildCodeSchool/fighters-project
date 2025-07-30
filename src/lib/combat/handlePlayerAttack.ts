@@ -54,9 +54,7 @@ export function handlePlayerAttack({
   setOpponent({ ...opponent, currentHealth: newOpponentHealth });
 
   let alertMessage = `${selectedFighter.name} utilise ${attack.name} et inflige ${damageToDeal} dégâts !`;
-  if (bonusDamage > 0) {
-    alertMessage += ` (+${bonusDamage} dégâts bonus)`;
-  }
+
   alert(alertMessage);
 
   if (newOpponentHealth === 0) {
