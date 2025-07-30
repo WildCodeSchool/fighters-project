@@ -1,10 +1,10 @@
-import "dotenv/config"
-import mysql from "mysql2/promise"
+import "dotenv/config";
+import mysql from "mysql2/promise";
 
 const { MYSQL_DB_HOST, MYSQL_DB_USER, MYSQL_DB_PASSWORD, MYSQL_DB_NAME } =
-  process.env
+  process.env;
 
-const seedData = [
+const infoData = [
   {
     title: "Partial Prerendering",
     content:
@@ -15,47 +15,18 @@ const seedData = [
     content:
       "Next.js 15 exploite React 19 pour des performances boostées avec le streaming SSR natif.",
   },
-  {
-    title: "App Router standard",
-    content:
-      "L'ancien Pages Router est maintenant remplacé par App Router dans toutes les nouvelles apps Next.js.",
-  },
-  {
-    title: "Layouts imbriqués",
-    content:
-      "Chaque répertoire peut contenir son propre layout, favorisant un design modulaire et cohérent.",
-  },
-  {
-    title: "Templates dynamiques",
-    content:
-      "Utilisez les fichiers `template.tsx` pour définir des structures alternatives à vos layouts classiques.",
-  },
-  {
-    title: "Middleware puissant",
-    content:
-      "Appliquez des middlewares pour gérer l'authentification, les redirections ou le tracking sans affecter le rendu.",
-  },
-  {
-    title: "Composants Server & Client",
-    content:
-      "Next.js 15 sépare proprement les composants Client et Server pour optimiser le rendu et la sécurité.",
-  },
-  {
-    title: "Optimisation des images",
-    content:
-      "Le composant <Image /> optimise automatiquement le format, la taille et le lazy loading des visuels.",
-  },
-  {
-    title: "API routes encore utiles",
-    content:
-      "Même avec App Router, les routes API sont toujours là pour gérer les petits besoins backend.",
-  },
-  {
-    title: "TypeScript par défaut",
-    content:
-      "Next.js initialise automatiquement votre projet avec TypeScript et ESLint configurés.",
-  },
-]
+];
+
+const fightersData = [
+  { name: "Ryu", health: 100, style: "Karate" },
+  { name: "Ken", health: 100, style: "Ansatsuken" },
+  { name: "Chun-Li", health: 90, style: "Kung-Fu" },
+];
+
+const combatsData = [
+  { fighter1_id: 1, fighter2_id: 2, winner_id: 1 },
+  { fighter1_id: 2, fighter2_id: 3, winner_id: 3 },
+];
 
 const seed = async () => {
   try {
@@ -64,22 +35,42 @@ const seed = async () => {
       user: MYSQL_DB_USER,
       password: MYSQL_DB_PASSWORD,
       database: MYSQL_DB_NAME,
-    })
+    });
 
-    await db.query("DELETE FROM info")
+    await db.query("SET FOREIGN_KEY_CHECKS = 0");
 
-    for (const { title, content } of seedData) {
+    await db.query("TRUNCATE TABLE combats");
+    await db.query("TRUNCATE TABLE fighters");
+    await db.query("TRUNCATE TABLE info");
+
+    await db.query("SET FOREIGN_KEY_CHECKS = 1");
+
+    for (const { title, content } of infoData) {
       await db.query("INSERT INTO info (title, content) VALUES (?, ?)", [
         title,
         content,
-      ])
+      ]);
     }
 
-    await db.end()
-    console.log("🌱 Database seeded successfully")
-  } catch (err) {
-    console.error("❌ Error during seeding:", err)
-  }
-}
+    for (const { name, health, style } of fightersData) {
+      await db.query(
+        "INSERT INTO fighters (name, health, style) VALUES (?, ?, ?)",
+        [name, health, style]
+      );
+    }
 
-seed()
+    for (const { fighter1_id, fighter2_id, winner_id } of combatsData) {
+      await db.query(
+        "INSERT INTO combats (fighter1_id, fighter2_id, winner_id) VALUES (?, ?, ?)",
+        [fighter1_id, fighter2_id, winner_id]
+      );
+    }
+
+    await db.end();
+    console.log("🌱 Base de données seedée avec succès");
+  } catch (err) {
+    console.error("❌ Erreur lors du seed :", err);
+  }
+};
+
+seed();

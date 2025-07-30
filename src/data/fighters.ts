@@ -1,7 +1,7 @@
 import { Fighter } from "@/model/Fighter";
 export const fighters: Fighter[] = [
   {
-    id: 1,
+    id: 2,
     name: "Ken",
     maxHealth: 100,
     currentHealth: 100,
@@ -19,7 +19,7 @@ export const fighters: Fighter[] = [
     },
   },
   {
-    id: 2,
+    id: 3,
     name: "Chun-Li",
     maxHealth: 90,
     currentHealth: 90,
@@ -37,7 +37,7 @@ export const fighters: Fighter[] = [
     },
   },
   {
-    id: 3,
+    id: 1,
     name: "Ryu",
     maxHealth: 100,
     currentHealth: 100,
